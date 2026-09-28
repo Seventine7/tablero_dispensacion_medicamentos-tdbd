@@ -28,12 +28,12 @@ meses = sorted(disp["mes"].dropna().unique().tolist())
 # Inicializar app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 
-# Layout con Pestañas (General, Detallado y Antidiabéticos)
+# Layout con pestañas
 app.layout = dbc.Container([
     html.H1("Dispensación de medicamentos", className="my-3"),
 
     dbc.Row([
-        # Sidebar con Filtros
+        # Sidebar
         dbc.Col([
             html.Div([
                 html.Label("Rango de fechas"),
@@ -120,7 +120,7 @@ app.layout = dbc.Container([
                     ], className="mb-3"),
                 ]),
 
-                # Pestaña 2: Análisis Detallado
+                # Pestaña: Análisis Detallado
                 dbc.Tab(label="Análisis Detallado", tab_id="tab-2", children=[
                     html.Br(),
                     dbc.Row([
@@ -142,7 +142,7 @@ app.layout = dbc.Container([
                     ]),
                 ]),
 
-                # Pestaña 3: Antidiabéticos
+                # Pestaña: Antidiabéticos
                 dbc.Tab(label="Análisis Antidiabéticos", tab_id="tab-3", children=[
                     html.Br(),
                     dbc.Row([
@@ -171,7 +171,7 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 
-# 5. Funciones auxiliares de filtrado
+# Funciones auxiliares de filtrado
 def filtrar(fecha_ini, fecha_fin, departamentos_sel, familias_sel, anios_sel, meses_sel, regionales_sel, grupos_sel):
     dff = disp
     if fecha_ini: dff = dff[dff["fecha_entrega"] >= pd.to_datetime(fecha_ini)]
@@ -207,7 +207,7 @@ filtros_anti_inputs = [
     Input("mes_filtro", "value"), Input("regional", "value")
 ]
 
-# 6. Callbacks Pestañas 1 y 2
+# Callbacks Pestañas 1 y 2
 @callback(Output("n_personas", "children"), filtros_inputs)
 def actualizar_n_personas(f_ini, f_fin, dep, fam, anio, mes, reg, gfco):
     return f"{filtrar(f_ini, f_fin, dep, fam, anio, mes, reg, gfco)['id'].nunique():,}"
@@ -263,7 +263,7 @@ def actualizar_grafico_municipio(f_ini, f_fin, dep, fam, anio, mes, reg, gfco):
     fig.update_layout(margin=dict(l=10, r=10, t=20, b=20))
     return fig
 
-# 7. Callbacks Pestaña 3 (Antidiabéticos)
+# Callbacks Pestaña 3 (Antidiabéticos)
 @callback(Output("costo_prom_anti", "children"), filtros_anti_inputs)
 def kpi_costo_anti(f_ini, f_fin, dep, anio, mes, reg):
     dff = filtrar_antidiabeticos(f_ini, f_fin, dep, anio, mes, reg)
